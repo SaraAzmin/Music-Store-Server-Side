@@ -22,6 +22,17 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
 
     try {
+        await client.connect();
+        const instrumentCollection = client.db('music_store').collection('instruments');
+
+        //all instruments loaded
+        app.get('/instruments', async (req, res) => {
+            const query = {};
+            const cursor = instrumentCollection.find(query);
+            const instruments = await cursor.toArray();
+            res.send(instruments);
+        })
+
 
     }
 
