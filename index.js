@@ -24,6 +24,7 @@ async function run() {
     try {
         await client.connect();
         const instrumentCollection = client.db('music_store').collection('instruments');
+        const reviewCollection = client.db('music_store').collection('reviews');
 
         //all instruments loaded
         app.get('/instruments', async (req, res) => {
@@ -31,6 +32,23 @@ async function run() {
             const cursor = instrumentCollection.find(query);
             const instruments = await cursor.toArray();
             res.send(instruments);
+        })
+
+        //get an instrument info
+        app.get('/instruments/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const instrument = await instrumentCollection.findOne(query);
+            res.send(instrument);
+        })
+
+
+        //all reviews loaded
+        app.get('/reviews', async (req, res) => {
+            const query = {};
+            const cursor = reviewCollection.find(query);
+            const reviews = await cursor.toArray();
+            res.send(reviews);
         })
 
 
