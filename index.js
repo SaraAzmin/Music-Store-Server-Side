@@ -88,6 +88,13 @@ async function run() {
             res.send(reviews);
         })
 
+        //add a new review
+        app.post('/reviews', verifyJWT, async (req, res) => {
+            const review = req.body;
+            const result = await reviewCollection.insertOne(review);
+            res.send({ success: true, result });
+        })
+
         //get all users for admin
         app.get('/user', verifyJWT, async (req, res) => {
             const users = await userCollection.find().toArray();
