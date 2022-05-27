@@ -116,6 +116,14 @@ async function run() {
             res.send({ success: true, result });
         })
 
+        //delete an order
+        app.delete('/order/:customerEmail', verifyJWT, async (req, res) => {
+            const customerEmail = req.params.customerEmail;
+            const filter = { customerEmail: customerEmail };
+            const result = await orderCollection.deleteOne(filter);
+            res.send(result);
+        })
+
         //get if the role of user
         app.get('/admin/:email', async (req, res) => {
             const email = req.params.email;
