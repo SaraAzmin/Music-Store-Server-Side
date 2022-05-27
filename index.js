@@ -19,6 +19,28 @@ app.use(express.json());
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.ssomg.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
+//middlewere function to verify jwt to avoid unauthorized access
+function verifyJWT(req, res, next) {
+
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+        return res.status(401).send({ message: 'Unauthorized access' });
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (error, decoded) {
+
+        if (error) {
+            return res.status(403).send({ message: 'Forbidden access' })
+        }
+
+        req.decoded = decoded;
+        next();
+    });
+}
+
 async function run() {
 
     try {
@@ -53,6 +75,13 @@ async function run() {
             res.send(reviews);
         })
 
+        //get all users for admin
+        app.get('/user', verifyJWT, async (req, res) => {
+            const users = await userCollection.find().toArray();
+            res.send(users);
+
+        })
+
         //add user
         app.put('/user/:email', async (req, res) => {
             const email = req.params.email;
@@ -74,23 +103,33 @@ async function run() {
             res.send({ success: true, result });
         })
 
+        //set admin role to user
+        app.put('/user/admin/:email', verifyJWT, async (req, res) => {
+
+            const email = req.params.email;
+
+            const filter = { email: email };
+            const updateDoc = {
+                $set: { userType: 'admin' },
+            };
+
+            const result = await userCollection.updateOne(filter, updateDoc);
+            res.send(result);
+        });
+
         //get all orders of a user
-        app.get('/order', async (req, res) => {
+        app.get('/order', verifyJWT, async (req, res) => {
             const customerEmail = req.query.customerEmail;
-            //const decodedEmail = req.decoded.email;
+            const decodedEmail = req.decoded.email;
 
-            const query = { customerEmail: customerEmail };
-            const orders = await orderCollection.find(query).toArray();
-            res.send(orders);
-
-            // if (customerEmail === decodedEmail) {
-            //     const query = { customerEmail: customerEmail };
-            //     const orders = await orderCollection.find(query).toArray();
-            //     res.send(orders);
-            // }
-            // else {
-            //     return res.send({ message: 'forbidden access' });
-            // }
+            if (customerEmail === decodedEmail) {
+                const query = { customerEmail: customerEmail };
+                const orders = await orderCollection.find(query).toArray();
+                res.send(orders);
+            }
+            else {
+                return res.status(403).send({ message: 'forbidden access' });
+            }
 
         })
 
