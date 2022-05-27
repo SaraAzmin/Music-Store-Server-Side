@@ -25,6 +25,7 @@ async function run() {
         await client.connect();
         const instrumentCollection = client.db('music_store').collection('instruments');
         const reviewCollection = client.db('music_store').collection('reviews');
+        const orderCollection = client.db('music_store').collection('orders');
 
         //all instruments loaded
         app.get('/instruments', async (req, res) => {
@@ -49,6 +50,13 @@ async function run() {
             const cursor = reviewCollection.find(query);
             const reviews = await cursor.toArray();
             res.send(reviews);
+        })
+
+        //add a new order
+        app.post('/order', async (req, res) => {
+            const order = req.body;
+            const result = await orderCollection.insertOne(order);
+            res.send({ success: true, result });
         })
 
 
