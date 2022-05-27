@@ -116,7 +116,7 @@ async function run() {
             res.send({ success: true, result });
         })
 
-        //get the role of user
+        //get if the role of user
         app.get('/admin/:email', async (req, res) => {
             const email = req.params.email;
             const user = await userCollection.findOne({ email: email });
