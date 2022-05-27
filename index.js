@@ -59,6 +59,26 @@ async function run() {
             res.send({ success: true, result });
         })
 
+        //get all orders of a user
+        app.get('/order', async (req, res) => {
+            const customerEmail = req.query.customerEmail;
+            //const decodedEmail = req.decoded.email;
+
+            const query = { customerEmail: customerEmail };
+            const orders = await orderCollection.find(query).toArray();
+            res.send(orders);
+
+            // if (customerEmail === decodedEmail) {
+            //     const query = { customerEmail: customerEmail };
+            //     const orders = await orderCollection.find(query).toArray();
+            //     res.send(orders);
+            // }
+            // else {
+            //     return res.send({ message: 'forbidden access' });
+            // }
+
+        })
+
 
     }
 
