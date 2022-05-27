@@ -50,6 +50,19 @@ async function run() {
         const orderCollection = client.db('music_store').collection('orders');
         const userCollection = client.db('music_store').collection('users');
 
+        //middlewere to verify if it is an admin
+        const verifyAdmin = async (req, res, next) => {
+            const requester = req.decoded.email;
+            const requesterAccount = await userCollection.findOne({ email: requester });
+            if (requesterAccount.userType === 'admin') {
+                next();
+            }
+            else {
+                res.status(403).send({ message: 'forbidden' });
+            }
+
+        }
+
         //all instruments loaded
         app.get('/instruments', async (req, res) => {
             const query = {};
@@ -104,7 +117,7 @@ async function run() {
         })
 
         //set admin role to user
-        app.put('/user/admin/:email', verifyJWT, async (req, res) => {
+        app.put('/user/admin/:email', verifyJWT, verifyAdmin, async (req, res) => {
 
             const email = req.params.email;
 
