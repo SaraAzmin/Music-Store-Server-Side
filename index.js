@@ -104,10 +104,10 @@ async function run() {
         })
 
         //delete product
-        app.delete('/instruments/:_id', verifyJWT, verifyAdmin, async (req, res) => {
-            const _id = req.params._id;
-            const filter = { _id: _id };
-            const result = await instrumentCollection.deleteOne(filter);
+        app.delete('/instruments/:id', verifyJWT, verifyAdmin, async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await instrumentCollection.deleteOne(query);
             res.send(result);
         })
 
