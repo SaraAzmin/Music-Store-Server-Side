@@ -233,19 +233,16 @@ async function run() {
         //get all orders of a user
         app.get('/order', verifyJWT, async (req, res) => {
             const customerEmail = req.query.customerEmail;
-            //const decodedEmail = req.decoded.email;
-            const query = { customerEmail: customerEmail };
-            const orders = await orderCollection.find(query).toArray();
-            res.send(orders);
+            const decodedEmail = req.decoded.email;
 
-            // if (customerEmail === decodedEmail) {
-            //     const query = { customerEmail: customerEmail };
-            //     const orders = await orderCollection.find(query).toArray();
-            //     res.send(orders);
-            // }
-            // else {
-            //     return res.status(403).send({ message: 'forbidden access' });
-            // }
+            if (customerEmail === decodedEmail) {
+                const query = { customerEmail: customerEmail };
+                const orders = await orderCollection.find(query).toArray();
+                res.send(orders);
+            }
+            else {
+                return res.status(403).send({ message: 'forbidden access' });
+            }
 
         })
 
