@@ -131,6 +131,15 @@ async function run() {
             res.send(result);
         })
 
+        //get a order info
+        app.get('/order/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const order = await orderCollection.findOne(query);
+            res.send(order);
+        })
+
+
         //get if the role of user
         app.get('/admin/:email', async (req, res) => {
             const email = req.params.email;
