@@ -179,6 +179,12 @@ async function run() {
             res.send(updatedOrder);
         })
 
+        //all order loaded for admin
+        app.get('/order', verifyJWT, verifyAdmin, async (req, res) => {
+            const orders = await orderCollection.find().toArray();
+            res.send(orders);
+        })
+
 
         //get if the role of user
         app.get('/admin/:email', async (req, res) => {
