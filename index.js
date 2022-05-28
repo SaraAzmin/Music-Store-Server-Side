@@ -34,7 +34,7 @@ function verifyJWT(req, res, next) {
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (error, decoded) {
 
         if (error) {
-            console.groupCollapsed(error)
+            console.log(error)
             return res.status(403).send({ message: 'Forbidden access' })
         }
 
@@ -145,7 +145,7 @@ async function run() {
                 $set: user,
             };
             const result = await userCollection.updateOne(filter, updateDoc, options);
-            const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '365d' })
+            const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET)
             res.send({ result, token });
         })
 
