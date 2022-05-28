@@ -189,7 +189,7 @@ async function run() {
         })
 
         //all order loaded for admin
-        app.get('/order', verifyAdmin, async (req, res) => {
+        app.get('/order', verifyJWT, verifyAdmin, async (req, res) => {
             const orders = await orderCollection.find().toArray();
             res.send(orders);
         })
@@ -218,7 +218,7 @@ async function run() {
         });
 
         //get all orders of a user
-        app.get('/order', async (req, res) => {
+        app.get('/order', verifyJWT, async (req, res) => {
             const customerEmail = req.query.customerEmail;
             //const decodedEmail = req.decoded.email;
             const query = { customerEmail: customerEmail };
