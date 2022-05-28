@@ -34,6 +34,7 @@ function verifyJWT(req, res, next) {
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (error, decoded) {
 
         if (error) {
+            console.groupCollapsed(error)
             return res.status(403).send({ message: 'Forbidden access' })
         }
 
