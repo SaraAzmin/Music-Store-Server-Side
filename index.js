@@ -149,6 +149,19 @@ async function run() {
             res.send({ result, token });
         })
 
+        //update profile
+        app.put('/update/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = req.body;
+            const filter = { email: email };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: user,
+            };
+            const result = await userCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
+        })
+
         //add a new order
         app.post('/order', async (req, res) => {
             const order = req.body;
