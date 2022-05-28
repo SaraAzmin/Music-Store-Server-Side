@@ -95,6 +95,14 @@ async function run() {
             res.send(instrument);
         })
 
+        //add product
+        app.post('/instruments', verifyJWT, verifyAdmin, async (req, res) => {
+
+            const newProduct = req.body;
+            const result = await instrumentCollection.insertOne(newProduct);
+            res.send(result);
+        })
+
 
         //all reviews loaded
         app.get('/reviews', async (req, res) => {
