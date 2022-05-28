@@ -103,6 +103,14 @@ async function run() {
             res.send(result);
         })
 
+        //delete product
+        app.delete('/instruments/:_id', verifyJWT, verifyAdmin, async (req, res) => {
+            const _id = req.params._id;
+            const filter = { _id: _id };
+            const result = await instrumentCollection.deleteOne(filter);
+            res.send(result);
+        })
+
 
         //all reviews loaded
         app.get('/reviews', async (req, res) => {
