@@ -202,7 +202,7 @@ async function run() {
         })
 
         //all order loaded for admin
-        app.get('/order', verifyJWT, verifyAdmin, async (req, res) => {
+        app.get('/order', verifyJWT, async (req, res) => {
             const orders = await orderCollection.find().toArray();
             res.send(orders);
         })
