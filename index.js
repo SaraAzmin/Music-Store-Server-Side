@@ -50,6 +50,7 @@ async function run() {
         const reviewCollection = client.db('music_store').collection('reviews');
         const orderCollection = client.db('music_store').collection('orders');
         const userCollection = client.db('music_store').collection('users');
+        const paymentCollection = client.db('music_store').collection('payments');
 
         //middlewere to verify if it is an admin
         const verifyAdmin = async (req, res, next) => {
@@ -152,6 +153,22 @@ async function run() {
             const query = { _id: ObjectId(id) };
             const order = await orderCollection.findOne(query);
             res.send(order);
+        })
+
+        //update payment paid of an order
+        app.patch('/order/:id', verifyJWT, async (req, res) => {
+            const id = req.params.id;
+            const payment = req.body;
+            const filter = { _id: ObjectId(id) };
+            const updatedDoc = {
+                $set: {
+                    paid: true,
+                    transactionId: payment.transactionId
+                }
+            }
+            const result = await paymentCollection.insertOne(payment);
+            const updatedOrder = await orderCollection.updateOne(filter, updatedDoc);
+            res.send(updatedOrder);
         })
 
 
