@@ -19,6 +19,6 @@ This is the server side project for a Musical Instrument Manufacturer named Musi
 - Expressjs
 - Nodemon
 - Cors
-- Heroku
+- Vercel
 - Json web token
 - Stripe
